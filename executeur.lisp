@@ -47,23 +47,42 @@
 	  (princ ligne-a-executer)
 	  (princ " : execution de ")
 	  (princ (get-tableau vm ligne-a-executer))
+	  (princ " => R0 ")
+	  (princ (get vm ':R0))
 	  (write-line "")))
     (cond 
+     ;; mettre une valeur dans R
+        ((and (eql (car (get-tableau vm ligne-a-executer)) ':MOVE) (eql (cadr (get-tableau vm ligne-a-executer)) 'R))
+	 (progn (setf (get vm ':R) (caddr (get-tableau vm ligne-a-executer)))
+		    (execute-vm vm (1+ ligne-a-executer))))
+	
+     ;; incrementer le PTR
+        ((and (eql (car (get-tableau vm ligne-a-executer)) ':INCR) (eql (cadr (get-tableau vm ligne-a-executer)) 'PTR))
+	 (progn (setf (get vm ':PTR) (- (get vm ':PTR) 1))
+		    (execute-vm vm (1+ ligne-a-executer))))
+	
+     ;; loader la valeur du ptr dans R0
+        ((equal (get-tableau vm ligne-a-executer) '(:LOAD R0 *PTR))
+	 (progn (setf (get vm ':R0) (get-tableau vm (get vm ':PTR)))
+		    (execute-vm vm (1+ ligne-a-executer))))
+	
+	
+	
      ;; saut simple,
      ;; saute a l instruction definie dans le 'cdr' et execute cette instruction
-        ((eql (car (get-tableau vm ligne-a-executer)) 'JMP) 
-	 (execute-vm vm (cdr (get-tableau vm ligne-a-executer))))
+        ((eql (car (get-tableau vm ligne-a-executer)) ':JMP) 
+	 (execute-vm vm (cadr (get-tableau vm ligne-a-executer))))
 	
 	;; l instruction STOP arrete la vm
 	;; en renvoyant le code de succes T
 	;; le T devrai s afficher a l'ecran
-        ((eql (car (get-tableau vm ligne-a-executer)) 'STOP) 
-	 (progn (if execute-debug (write-line "execution terminee avec succes")) T) )
+        ((eql (car (get-tableau vm ligne-a-executer)) ':STOP)
+	 (progn (if execute-debug (write-line "execution terminee avec succes")) (setf (get vm ':PTR) (get vm ':ram)) (eq (get vm ':R) '1)) )
 	
 	;; saut conditionnel
 	;; si le flag d'egalite de la machine virtuelle, saute au 'cdr'
 	;; sinon execute l instruction suivante .
-        ((eql (car (get-tableau vm ligne-a-executer)) 'JEQ)
+        ((eql (car (get-tableau vm ligne-a-executer)) ':JEQ)
 	 (let ((ligne-a-laquelle-aller-si-egal (cadr (get-tableau vm ligne-a-executer)))
 	       (ligne-a-laquelle-aller-si-different (+ 1 ligne-a-executer)))
 	   (if (get-reg-equal vm)
@@ -77,15 +96,14 @@
 	;; si les deux sont egaux,
 	;; affecte au flag de comparaison de la machine virtuelle
 	;; la valeur '1 sinon la valeur '0
-	((eql (car (get-tableau vm ligne-a-executer)) 'CMP)
+	((and (eql (car (get-tableau vm ligne-a-executer)) ':CMP)
+		  (eql (cadr (get-tableau vm ligne-a-executer)) 'R0))
 	 (let ((resultat
-		(eql (caddr (get-tableau vm ligne-a-executer))
-		     (get vm ':R0))))
-	   (if (eql (cadr (get-tableau vm ligne-a-executer)) 'R0)
-	       (progn
+		            (eql (caddr (get-tableau vm ligne-a-executer))
+		                 (get vm ':R0))))
+		(progn
 		 (if resultat (set-reg-equal vm '1) (set-reg-equal vm '0))
-		 (execute-vm vm (1+ ligne-a-executer)))
-	     (error "le premier parametre de CMP doit etre RO (ligne ~S) instruction ~S" ligne-a-executer (get-tableau vm ligne-a-executer)))))
+		 (execute-vm vm (1+ ligne-a-executer)))))
 	
 	
 	;; charge la valeur du 'caddr' (third) dans le registre indique
@@ -106,6 +124,6 @@
 	
 	;; fonction non implementee
 	;; ou mala formulee
-        (T (write-line "execution inposible de ~S a la ligne ~S : NYI") (get-tableau vm ligne-a-executer) ligne-a-executer))
+        (T (error "execution inposible de ~S a la ligne ~S : NYI"  (get-tableau vm ligne-a-executer) ligne-a-executer))
     )
-  )
+  ))
