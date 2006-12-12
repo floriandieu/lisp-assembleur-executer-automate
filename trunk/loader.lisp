@@ -66,12 +66,22 @@
 ;; si on est en mode debug :
 (setf loader-debug ())
 
+
+;; charge le code a partir d un fichier
+(defun charger-code (machine-virtuelle fichier &optional (ligne-debut '0))
+  (let ((flux (open fichier :direction :input)) (EOF (gensym)))
+    (let ((r (read flux () EOF)))
+      (progn (loop until (eql r EOF) do (progn (charger-code-a-parir-du-code machine-virtuelle r ligne-debut)
+                                              (setf r (read flux () EOF))))
+			 T))))
+
+
 ;; fonction principale:
 ;; les parametres sont
 ;; -> machine-virtuelle ===== nom de la machine virtuelle
 ;; -> code =========== code a charger
 ;; -> ligne-debut ======== la ou on commence a charger le code (par defaut '0)
-(defun charger-code (machine-virtuelle code &optional (ligne-debut '0))
+(defun charger-code-a-parir-du-code (machine-virtuelle code &optional (ligne-debut '0))
   ;; on fera une recursion interne sur
   ;; "code", pour cela on definit une sous fonction
   (labels(
@@ -150,11 +160,12 @@
 			   ;; (principal)
 			   ;; on definit ligne comme la ligne a enregistrer
 			   (let ((ligne (car code))
-				 (liste-des-etiquettes-autorisees '(label :label etiq :etiq etiquette :etiquette))
-				 (liste-des-sauts-etiquetes-autorisees '(jmp :jmp jeq :jeq))
-				 (liste-des-instructions-autorisees '(STOP CMP LOAD NOP)))
+				 (liste-des-etiquettes-autorisees '(:label))
+				 (liste-des-sauts-etiquetes-autorisees '(:JEQ :JMP))
+				 (liste-des-instructions-autorisees '(:MOVE :INCR :CMP :LOAD :STOP)))
 			     (progn 
-			       (if (>= num-ligne-insertion (get vm ':ram)) (error "impossible d'ecrire la ligne ~S : depassement de la taille de la ram disponible ([0 .. ~S])" num-ligne-insertion (- (get vm ':ram) 1)))
+			       (setf (get vm ':DERNIERCODE) num-ligne-insertion)
+				   (if (>= num-ligne-insertion (get vm ':ram)) (error "impossible d'ecrire la ligne ~S : depassement de la taille de la ram disponible ([0 .. ~S])" num-ligne-insertion (- (get vm ':ram) 1)))
 			       (cond 
 				((member (car ligne) liste-des-etiquettes-autorisees)
 				 ;; on a trouve une etiquette
@@ -281,7 +292,15 @@
 
 
 
-
+;; le chargement d un mot :
+(defun charger-mot (vm liste-lettres &optional (numlettre '0))
+	;; on teste si on ne mange pas le code a executer:
+	(if (<= (- (get vm ':ram) (1+ numlettre)) (get vm ':DERNIERCODE))
+		   (error "on ne peut pas charger la lettre d un mot a l indice ~S car le code assembleur est a cet endroit" (- (get vm ':ram) (1+ numlettre)))
+		(if (null liste-lettres)
+			   (write-tableau vm (- (get vm ':ram) (1+ numlettre)) '$)
+			(progn (write-tableau vm (- (get vm ':ram) (1+ numlettre)) (car liste-lettres))
+			        (charger-mot vm (cdr liste-lettres) (1+ numlettre))))))
 
 
 

@@ -12,7 +12,21 @@
 
 
 
-(load "gene/make-vm.lsp")
+(load "gene/make-vm.lisp")
 (load "gene/loader.lisp")
 (load "gene/executeur.lisp")
+(load "gene/generer-code.lisp")
 
+;; aide contextuelle:
+(defun usage () 
+	(progn 
+		(write-line "generation de code")
+		(write-line " fonctions principales :")
+		(write-line "  - (make-vm 'nom 'taille)")
+		(write-line "  - (generer-code \"fichier\" &optionnal \"fichier-sortie\")")
+		(write-line "  - (charger-code 'nom-vm \"fichier\")")
+		(write-line "  - (charger-mot 'nom-vm 'liste-lettres)")
+		(write-line "  - (affiche-tableau 'nom-vm)")
+		(write-line "  - (execute-vm 'nom-vm)")
+		(write-line "  - (get-resultat 'nom-vm)")
+		T))

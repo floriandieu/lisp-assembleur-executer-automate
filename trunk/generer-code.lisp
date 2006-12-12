@@ -1,8 +1,16 @@
 
 ;; generer le code assembleur
 
+(defun generer-code (fichier &optional (fichier-sortie "code.asm"))
+  (let ((flux (open fichier :direction :input)) (EOf (gensym))
+		(flux-sortie (open fichier-sortie :direction :output)))
+    (let ((r (read flux () EOF)))
+      (progn (loop until (eql r EOF) do (progn (generer-code-a-partir-de-l-automate r flux-sortie)
+                                              (setf r (read flux () EOF))))
+			 (close flux)))))
 
-(defun generercode (automate)
+
+(defun generer-code-a-partir-de-l-automate (automate flux-sortie)
   ;; variables locales a la fonction
   (let ((vocabulaire (get_vocabulaire automate))
 	(liste_des_etats (get_liste_des_etats automate))
@@ -11,38 +19,44 @@
 	(liste_transitions (get_liste_transitions automate)))
     ;; pour chaque etat, on genere le code
     (progn
-      (write-line "LABEL @INIT")
-      (write-line "MOVE R #0")
+      (write-line "((:LABEL @INIT)" flux-sortie)
+      (write-line "(:MOVE R 0)" flux-sortie)
       (loop until (null liste_des_etats) do
 	(progn 
-	  (princ "LABEL @etat")(princ (car liste_des_etats))(write-line "")
-	  (write-line "INCR PTR")
-	  (write-line "LOAD R0 *PTR")
+	  (princ "(:LABEL @etat" flux-sortie)(princ (car liste_des_etats) flux-sortie)(write-line ")" flux-sortie)
+	  (write-line "(:INCR PTR)" flux-sortie)
+	  (write-line "(:LOAD R0 *PTR)" flux-sortie)
 	  ;; pour chaque lettre du vocabulaire,
 	  ;;  on genere le code
 	  (let ((vocabulaire_temporaire (copy-list vocabulaire)))
 	    (loop until (null vocabulaire_temporaire) do
-	      (progn (princ "CMP RO ")(princ (car vocabulaire_temporaire))(write-line "")
+	      (progn (princ "(:CMP R0 " flux-sortie)(princ (car vocabulaire_temporaire) flux-sortie)(write-line ")" flux-sortie)
 		     ;; sauter au bon endroit (bon label) @echec sinon
 		     (let ((suivant (get_suivant_par (car liste_des_etats) (car vocabulaire_temporaire) liste_transitions)))
 		       (if (null suivant)
-			   (write-line "JEQ @echec")
-			 (progn (princ "JEQ @etat")(princ suivant)(write-line ""))))
+			   (write-line "(:JEQ @echec)" flux-sortie)
+			 (progn (princ "(:JEQ @etat" flux-sortie)(princ suivant flux-sortie)(write-line ")" flux-sortie))))
 		     (setf vocabulaire_temporaire (cdr vocabulaire_temporaire)))) ;; fi de la 2eme boucle
 	    ;; si on croise le $ (fin de mot)
 	    ;; si c'est un final ===> label "@fin"
 	    ;; si non ==============> label "@echec"
 	    (progn
-	      (write-line "CMP R0 $")
+	      (write-line "(:CMP R0 $)" flux-sortie)
 	      (let ((final (member (car liste_des_etats) etats_finaux)))
-		(if final (write-line "JMP @fin") (write-line "JMP @echec")))))
+		 
+		(if final (write-line "(:JEQ @fin)" flux-sortie) (write-line "(:JEQ @echec)" flux-sortie)))))
 	  (setf liste_des_etats (cdr liste_des_etats))));; fin du 1er loop
-      (write-line "LABEL @fin")
-      (write-line "MOVE R #1")
-      (write-line "STOP")
-      (write-line "LABEL @echec")
-      (write-line "MOVE R #0")
-      (write-line "STOP"))))
+      (write-line "(:LABEL @fin)" flux-sortie)
+      (write-line "(:MOVE R 1)" flux-sortie)
+      (write-line "(:STOP)" flux-sortie)
+      (write-line "(:LABEL @echec)" flux-sortie)
+      (write-line "(:MOVE R 0)" flux-sortie)
+      (write-line "(:STOP))" flux-sortie)
+	  ;; il ne faut pas oublier de fermer le flux,
+	  ;; sinon il manquera la fin du fichier
+	  (finish-output flux-sortie)
+	  (close flux-sortie)
+	  T)))
 
 
 
@@ -76,7 +90,7 @@
 (defun get_etat_final (automate)
   (if (null automate)
       ()
-    (if (eql ':etat-fin (caar automate))
+    (if (or (eql ':etat-final (caar automate)) (eql ':etat-fin (caar automate)))
 	(cdar automate)
       (get_etat_final (cdr automate)))))
 
@@ -95,3 +109,6 @@
     (if (and (eql etat_depart (caar liste_des_transitions)) (eql caractere_a_suivre (cadar  liste_des_transitions)))
 	(caddar liste_des_transitions)
       (get_suivant_par etat_depart caractere_a_suivre (cdr liste_des_transitions)))))
+
+	  
+	  
