@@ -12,10 +12,10 @@
 
 
 
-(load "gene/make-vm.lisp")
-(load "gene/loader.lisp")
-(load "gene/executeur.lisp")
-(load "gene/generer-code.lisp")
+(load "make-vm.lisp")
+(load "loader.lisp")
+(load "executeur.lisp")
+(load "generer-code.lisp")
 
 ;; aide contextuelle:
 (defun usage () 
