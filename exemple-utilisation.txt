@@ -1,0 +1,8 @@
+
+(load "charger-tout.lisp")
+
+(make-vm 'toto 100)
+
+(charger-code 'toto "code.asm")
+
+(charger-mot 'toto '(s a l u t))
