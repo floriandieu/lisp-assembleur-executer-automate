@@ -123,7 +123,7 @@
 	
 	
 	;; fonction non implementee
-	;; ou mala formulee
+	;; ou mal formulee
         (T (error "execution inposible de ~S a la ligne ~S : NYI"  (get-tableau vm ligne-a-executer) ligne-a-executer))
     )
   ))
