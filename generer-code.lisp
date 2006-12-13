@@ -44,7 +44,8 @@
 	      (write-line "(:CMP R0 $)" flux-sortie)
 	      (let ((final (member (car liste_des_etats) etats_finaux)))
 		 
-		(if final (write-line "(:JEQ @fin)" flux-sortie) (write-line "(:JEQ @echec)" flux-sortie)))))
+		(if final (write-line "(:JEQ @fin)" flux-sortie) (write-line "(:JEQ @echec)" flux-sortie)))
+		(write-line "(:JMP @echec)" flux-sortie)))
 	  (setf liste_des_etats (cdr liste_des_etats))));; fin du 1er loop
       (write-line "(:LABEL @fin)" flux-sortie)
       (write-line "(:MOVE R 1)" flux-sortie)
