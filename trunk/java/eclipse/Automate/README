@@ -1,0 +1,26 @@
+//* licence GPL
+
+
+pour l'UE de gene,
+on doit passer des automates a la machine virtuelle :
+
+au lieu de faire a la main,
+on peut utiliser ce petit code :
+
+faire java Main
+pour l'usage ,
+
+en gros 
+
+java Main <fichier_dictionnaire> [-lisp]
+
+-lisp est une option interessante pour l'UE justement .
+
+reactions: delfour.kevin.free.fr
+
+contact: jmecodolAt_ _gmail.com (supprimer les _ _)
+
+limitations:
+genere puis affiche, se serai mieu de genere et afficher
+en meme temp .
+numero automates en <int> donc max = 2^32
