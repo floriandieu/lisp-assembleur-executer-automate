@@ -51,6 +51,11 @@ public class Automate {
 	 * les etats finaux
 	 */
 	private Vector<Integer> etatsFinaux = null ;
+	/*
+	 * le nombre d etats crees :
+	 *
+	 */
+	int numEtat = 0 ;
 
 	
 	/*
@@ -96,6 +101,8 @@ public class Automate {
 	
 	/*
 	 * genere un numero d Etat non utilise
+	 * comme on ne supprime jamais d etats,
+	 * on propose le precedant + 1
 	 */
 	private int genererNumeroEtatOriginal()
 	{
@@ -103,30 +110,10 @@ public class Automate {
 		if (Etats==null)
 		{
 			Etats = new Vector<Etat> () ;
-			return 0 ;
+			return 0;
 		}
-		// on essaye de calcueler la plus petite valeur pour laquelle
-		// on a pas d etat
-		// on regarde si on a cet indice dans le tableau
-		// pour chaque valeur proposee
-		for (int valeurProposee=0 ;valeurProposee<Etats.size()+1;valeurProposee++ )
-		{
-			// pour chaque valeur du tableau des Etats
-			// on doit regarder si il y est
-			boolean estDansLaListe = false ;
-			for ( Etat et : Etats)
-			{
-				if(et.getNumero()==valeurProposee)
-					estDansLaListe = true ;
-			}
-			if (!estDansLaListe)
-			{
-				return valeurProposee ;
-			}
-		}
-		System.out.println("erreur :: le quotas d'Etat max a ete atteint dans genererNumeroEtatOriginal");
-		System.exit(1) ;
-		return 0 ;
+		numEtat ++ ;
+		return numEtat ;
 	}
 	
 	
@@ -297,14 +284,7 @@ public class Automate {
 		this.etatInitial.reinitialiseAffichageInfoRec() ;		
 	}
 
-	/**
-	 * affiche les infos (lisp)
-	 *
-	 */
-	private void afficheInfosRecLisp() {
-		this.etatInitial.afficheInfosRecLisp() ;
-		this.etatInitial.reinitialiseAffichageInfoRec() ;		
-	}
+
 
 
 
