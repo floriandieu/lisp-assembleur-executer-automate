@@ -1,0 +1,8 @@
+((:VOC l e a )
+ (:ETAT-INIT  0)
+ (:ETAT-FINAL 2 3 )
+ (:ETAT 0 1 2 3 )
+ (:TRANSITION
+  (0 l 1 )
+  (1 e 2 )
+  (1 a 3 )))

@@ -1,0 +1,102 @@
+;; demonstration le 15-12-2006
+;; 15-12-2006
+;; Generation de code
+
+;; jean-marie codol
+;; guillaume sauvajol
+
+;; on a besoin de 2 consoles ouvertes dans le dossier : lisp-assembleur-executer-automate/
+;; les fichier "./petit-dico.asm" "prenom_fille.asm" ne doivent pas exister !!
+;; parce que lisp ecrit dedans ..
+
+>console 1
+cd java
+java -jar generer-automate.jar petit-dictionnaire.txt -lisp  > petit-dictionnaire.txt.automate
+
+
+;; dans une autre console :
+>console 2
+clisp -C
+
+;; -C pour avoir plus de memoire .
+
+(load "charger-tout.lisp")
+
+
+(generer-code "java/petit-dictionnaire.txt.automate" "petit-dico.asm")
+
+>console 1
+wc -l ../petit-dico.asm
+;; 936 ???
+
+>console 2
+(make-vm 'petit 1000)
+
+(charger-code 'petit "petit-dico.asm")
+
+
+(charger-mot 'petit '(m a i s))
+
+(execute-vm 'petit)
+
+(charger-mot 'petit '(m a i s 2))
+
+(execute-vm 'petit)
+
+;______________
+
+>console 1
+java -jar generer-automate.jar prenom_fille.txt -lisp  > prenom_fille.txt.automate
+
+>console 2
+(generer-code "java/prenom_fille.txt.automate" "prenom_fille.asm")
+
+>console 1
+wc -l ../prenom_fille.asm
+;; 190418 ???
+
+>console 2
+(make-vm 'prenom 20000)
+
+(charger-code 'prenom "prenom_fille.asm")
+
+(make-vm 'prenom 200000)
+
+(charger-code 'prenom "prenom_fille.asm")
+
+
+(charger-mot 'prenom '(A l e x a n d r a))
+
+(execute-vm 'prenom)
+
+(charger-mot 'prenom '(i r i s 2))
+
+(execute-vm 'prenom)
+
+;;______________
+
+
+(affiche-tableau 'petit) ==> 903 lignes de code
+
+(make-vm 'petit2 908)
+
+(charger-code 'petit2 "petit-dico.asm")
+
+
+(charger-mot 'petit2 '(m a i s))
+(affiche-tableau 'petit2)
+==> on voit que "STOP" n a pas ete ecrase
+
+(charger-mot 'petit2 '(o r))
+(execute-vm 'petit2)
+
+(charger-mot 'petit2 '(o r 2))
+(execute-vm 'petit2)
+
+(get-resultat 'petit2)
+
+
+
+;; Cette demonstration a ete faite le  15-12-2006
+
+--
