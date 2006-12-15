@@ -1,3 +1,10 @@
+;; 15-12-2006
+;; Generation de code
+
+;; jean-marie codol
+;; guillaume sauvajol
+
+
 ;; generation de code
 
 
@@ -6,7 +13,7 @@
 
 ;; version 0.2
 
-;; auteur jean-marie
+;; auteur jean-marie,guillaume
 ;; date 03-12-2006
 ;; release notes :--
 ;; test sur la taille de la vm
@@ -18,10 +25,10 @@
 
 ;; version 0.1
 
-;; auteur jean-marie
+;; auteur jean-marie,guillaume
 ;; date 02-12-2006
 ;; release notes :--
-;; add asm library instruction in function "charger-code" => we can add instructions to parse in the main function
+;; add asm library instruction in function "charger-code" => we can add instructions to parse in the main function (sorry for english, but it is life)
 ;; make link with the structure vm :mem to load instructions in this structure
 ;; modify error message :  "erreur : impossible de resoudre l etiquette '~S' demandee a la (aux) lignes de code ~S" (the first ~S was't)
 
@@ -33,7 +40,7 @@
 ;; mais c est pour afficher des informations pour comprendre le deroulement
 ;; si la variable de debug est a T
 
-;; le cahrgeur doit resoudre les etiquettes
+;; le chargeur doit resoudre les etiquettes
 ;; par exemple
 ;; 349 : (:label @titi)
 ;; ...

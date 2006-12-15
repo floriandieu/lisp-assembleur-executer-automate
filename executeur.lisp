@@ -1,3 +1,9 @@
+;; 15-12-2006
+;; Generation de code
+
+;; jean-marie codol
+;; guillaume sauvajol
+
 
 ;; executeur.lisp
 
@@ -5,7 +11,7 @@
 
 ;; version 0.2
 
-;; auteur jean-marie
+;; auteur jean-marie,guillaume
 ;; date 02-12-2006
 ;; release notes :--
 ;;  recuperer l exception "vm trop petite : impossible d executer la ligne xxx"
@@ -14,7 +20,7 @@
 
 ;; version 0.1
 
-;; auteur jean-marie
+;; auteur jean-marie,guillaume
 ;; date 02-12-2006
 ;; release notes :--
 ;; les instructions traitees sont :
