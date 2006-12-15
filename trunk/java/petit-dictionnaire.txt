@@ -1,5 +1,22 @@
 # petit dictionnaire
 # pour les tests :
+# le programme java filtre les lignes commencant par # et les '\n'
 
-le
 la
+la
+les
+
+un
+une
+des
+
+mais
+ou
+est
+donc
+or
+ni
+car
+
+
+## 13 mots .
