@@ -1,0 +1,17 @@
+;; 15-12-2006
+;; Generation de code
+
+;; jean-marie codol
+;; guillaume sauvajol
+
+
+;; la generation de code peut etre longue,
+;;  pour ne pas penaliser l utilisateur,
+;; on peut utiliser un limitateur de cpu
+;; pour un processus donne .
+
+;; les plus connus sont cpulimit pout linux,
+;; et BES pour windows .
+
+;; les sources sont dans les sous-repertoires .
+
