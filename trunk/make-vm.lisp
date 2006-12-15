@@ -1,3 +1,9 @@
+;; 15-12-2006
+;; Generation de code
+
+;; jean-marie codol
+;; guillaume sauvajol
+
 
 ;; make.vm.lsp
 
