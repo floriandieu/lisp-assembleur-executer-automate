@@ -29,6 +29,7 @@
       (write-line "(:MOVE R 0)" flux-sortie)
       (loop until (null liste_des_etats) do
 	(progn 
+	  (princ (car liste_des_etats))(write-line "")
 	  (princ "(:LABEL @etat" flux-sortie)(princ (car liste_des_etats) flux-sortie)(write-line ")" flux-sortie)
 	  (write-line "(:INCR PTR)" flux-sortie)
 	  (write-line "(:LOAD R0 *PTR)" flux-sortie)
