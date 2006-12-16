@@ -9,6 +9,13 @@
 
 ;; execute les instructions d une V.M.
 
+;; version 0.3
+
+;; auteur jean-marie,guillaume
+;; date 10-12-2006
+;; release notes :--
+;;  ajout des ':' devant toutes les instructions, sinon le read de clisp est impossible . Grrrrr
+
 ;; version 0.2
 
 ;; auteur jean-marie,guillaume
@@ -112,19 +119,11 @@
 		 (execute-vm vm (1+ ligne-a-executer)))))
 	
 	
-	;; charge la valeur du 'caddr' (third) dans le registre indique
-	;; ici seul R0 est definit,
-	;; mais on peut en rajouter (des registres)
-        ((eql (car (get-tableau vm ligne-a-executer)) 'LOAD)
-	 (if (eql (cadr (get-tableau vm ligne-a-executer)) 'R0)
-	     ;; on emmene la 3eme valeur dans R0
-	     (progn (setf (get vm ':R0) (caddr (get-tableau vm ligne-a-executer)))
-		    (execute-vm vm (1+ ligne-a-executer)))
-	   (error "on ne peut affecter avec LOAD que dans R0 a la ligne ~S dans ~S" ligne-a-executer (get-tableau vm ligne-a-executer))))
+
 	
 	;; l instruction speciale "ne rien faire"
 	;; on passe donc a l execution de la ligne suivante
-        ((eql (car (get-tableau vm ligne-a-executer)) 'NOP) 
+        ((eql (car (get-tableau vm ligne-a-executer)) ':NOP) 
 	 (execute-vm vm (1+ ligne-a-executer)))
 	
 	
